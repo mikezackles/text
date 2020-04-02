@@ -62,6 +62,15 @@ namespace boost { namespace text { inline namespace v1 {
                 return *this;
             }
 
+            using stl_interfaces::proxy_iterator_interface<
+                  const_lazy_segment_iterator<
+                      CPIter,
+                      Sentinel,
+                      NextFunc,
+                      CPRange>,
+                  std::forward_iterator_tag,
+                  CPRange>::operator++;
+
             void set_next_func(NextFunc * next_func) noexcept
             {
                 next_func_ = next_func;
@@ -127,6 +136,15 @@ namespace boost { namespace text { inline namespace v1 {
                 it_ = prev_it;
                 return *this;
             }
+
+            using stl_interfaces::proxy_iterator_interface<
+                  const_reverse_lazy_segment_iterator<
+                      CPIter,
+                      Ignored,
+                      PrevFunc,
+                      CPRange>,
+                  std::forward_iterator_tag,
+                  CPRange>::operator++;
 
             void set_next_func(PrevFunc * prev_func) noexcept
             {

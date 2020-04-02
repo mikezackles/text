@@ -360,9 +360,13 @@ namespace boost { namespace stl_interfaces { inline namespace v1 {
             return access::base(derived()) += n;
         }
 
-        template<typename D = Derived>
+        template<
+            typename D = Derived,
+            bool NoExcept = noexcept(
+                D(std::declval<D &>()),
+                std::declval<D &>() += std::declval<difference_type>())>
         constexpr D operator+(difference_type i) const
-            noexcept(noexcept(D(std::declval<D &>()), std::declval<D &>() += i))
+            noexcept(NoExcept)
         {
             D retval = derived();
             retval += i;
@@ -424,9 +428,13 @@ namespace boost { namespace stl_interfaces { inline namespace v1 {
             return access::base(derived()) - access::base(other);
         }
 
+        template<typename D = Derived,
+            bool NoExcept = noexcept(
+                D(std::declval<D>()),
+                std::declval<D>() += -std::declval<difference_type>())>
         friend BOOST_STL_INTERFACES_HIDDEN_FRIEND_CONSTEXPR Derived operator-(
             Derived it,
-            difference_type i) noexcept(noexcept(Derived(it), it += -i))
+            difference_type i) noexcept(NoExcept)
         {
             Derived retval = it;
             retval += -i;
