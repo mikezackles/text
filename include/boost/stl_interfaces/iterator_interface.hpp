@@ -372,8 +372,11 @@ namespace boost { namespace stl_interfaces { inline namespace v1 {
             retval += i;
             return retval;
         }
-        friend BOOST_STL_INTERFACES_HIDDEN_FRIEND_CONSTEXPR Derived
-        operator+(difference_type i, Derived it) noexcept(noexcept(it + i))
+
+        template <typename Diff>
+        friend BOOST_STL_INTERFACES_HIDDEN_FRIEND_CONSTEXPR auto
+        operator+(Diff i, Derived it) noexcept(noexcept(it + i))
+            -> decltype(it + i, std::declval<Derived>())
         {
             return it + i;
         }
@@ -411,9 +414,11 @@ namespace boost { namespace stl_interfaces { inline namespace v1 {
             return retval;
         }
 
-        template<typename D = Derived>
-        constexpr D & operator-=(difference_type i) noexcept(
-            noexcept(std::declval<D &>() += -i))
+        template<
+            typename D = Derived,
+            bool NoExcept =
+                noexcept(std::declval<D &>() += -std::declval<difference_type>())>
+        constexpr D & operator-=(difference_type i) noexcept(noexcept(NoExcept))
         {
             derived() += -i;
             return derived();
@@ -428,13 +433,15 @@ namespace boost { namespace stl_interfaces { inline namespace v1 {
             return access::base(derived()) - access::base(other);
         }
 
-        template<typename D = Derived,
-            bool NoExcept = noexcept(
-                D(std::declval<D>()),
-                std::declval<D>() += -std::declval<difference_type>())>
-        friend BOOST_STL_INTERFACES_HIDDEN_FRIEND_CONSTEXPR Derived operator-(
-            Derived it,
-            difference_type i) noexcept(NoExcept)
+        template <typename Diff>
+        friend BOOST_STL_INTERFACES_HIDDEN_FRIEND_CONSTEXPR auto
+        operator-(Derived it, Diff i)
+            noexcept(noexcept(
+                Derived(std::declval<Derived>()),
+                std::declval<Derived>() += -std::declval<Diff>()))
+            -> decltype(
+                std::declval<Derived>() += -std::declval<Diff>(),
+                std::declval<Derived>())
         {
             Derived retval = it;
             retval += -i;
