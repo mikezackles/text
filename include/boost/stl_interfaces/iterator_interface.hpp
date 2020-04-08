@@ -418,7 +418,7 @@ namespace boost { namespace stl_interfaces { inline namespace v1 {
             typename D = Derived,
             bool NoExcept =
                 noexcept(std::declval<D &>() += -std::declval<difference_type>())>
-        constexpr D & operator-=(difference_type i) noexcept(noexcept(NoExcept))
+        constexpr D & operator-=(difference_type i) noexcept(NoExcept)
         {
             derived() += -i;
             return derived();
